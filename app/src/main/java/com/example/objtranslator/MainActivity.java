@@ -27,4 +27,11 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ImageHelperActivity.class);
         startActivity(intent);
     }
+
+    //When clicking onGotoImage Button => Image Activity Page
+    public void onGotoObjectDetection(View view){
+        //start image helper activity
+        Intent intent = new Intent(this, ObjectDetectionActivity.class);
+        startActivity(intent);
+    }
 }
