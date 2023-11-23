@@ -7,7 +7,7 @@
     tools:context=".helpers.ImageHelperActivity">
 
     <ImageView
-        android:id="@+id/imageViewOutput"
+        android:id="@+id/imageViewInput"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Pick Image"
+            android:onClick="onPickImage"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/buttonStartCamera"
             app:layout_constraintHorizontal_bias="0.5"
@@ -41,6 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Start Camera"
+            android:onClick="onStartCamera"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -57,6 +59,6 @@
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewOutput" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewInput" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
