@@ -15,6 +15,9 @@
         android:theme="@style/Theme.ObjTranslator"
         tools:targetApi="31">
         <activity
+            android:name=".helpers.DotsOutline"
+            android:exported="false" />
+        <activity
             android:name=".image.ImageClassificationActivity"
             android:exported="false" />
         <activity

@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.objtranslator.helpers.DotsOutline;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.mlkit.vision.common.InputImage;
@@ -15,6 +16,7 @@ import com.google.mlkit.vision.objects.ObjectDetector;
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
 import com.example.objtranslator.helpers.ImageHelperActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ObjectDetectionActivity extends ImageHelperActivity {
@@ -45,15 +47,21 @@ public class ObjectDetectionActivity extends ImageHelperActivity {
                     public void onSuccess(@NonNull List<DetectedObject> detectedObjects) {
                         if (!detectedObjects.isEmpty()) {
                             StringBuilder builder = new StringBuilder();
+                            List<DotsOutline> dots = new ArrayList<>();
                             for (DetectedObject object : detectedObjects) {
                                 if (!object.getLabels().isEmpty()) {
                                     //store first label
                                     String label = object.getLabels().get(0).getText();
-                                    builder.append(label).append("\n");
+                                    builder.append(label).append(": ")
+                                            .append(object.getLabels().get(0).getConfidence()).append("\n");
+                                    dots.add(new DotsOutline(object.getBoundingBox(), label));
                                     Log.d("ObjectDetection", "Object detected: " + label);
+                                } else {
+                                    builder.append("Unknown").append("\n");
                                 }
                             }
                             getOutputTextView().setText(builder.toString());
+                            drawDetectionResult(dots, bitmap);
                         } else {
                             getOutputTextView().setText("Could not detect");
                         }
