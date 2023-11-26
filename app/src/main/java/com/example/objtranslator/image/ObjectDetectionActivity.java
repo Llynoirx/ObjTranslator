@@ -1,4 +1,4 @@
-package com.example.objtranslator;
+package com.example.objtranslator.image;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -36,6 +36,7 @@ public class ObjectDetectionActivity extends ImageHelperActivity {
         objectDetector = ObjectDetection.getClient(options);
     }
 
+    @Override
     protected void runClassification(Bitmap bitmap){
         InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
         objectDetector.process(inputImage)

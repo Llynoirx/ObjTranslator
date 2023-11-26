@@ -15,7 +15,10 @@
         android:theme="@style/Theme.ObjTranslator"
         tools:targetApi="31">
         <activity
-            android:name=".ObjectDetectionActivity"
+            android:name=".image.ImageClassificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".image.ObjectDetectionActivity"
             android:exported="false" />
         <activity
             android:name=".helpers.ImageHelperActivity"

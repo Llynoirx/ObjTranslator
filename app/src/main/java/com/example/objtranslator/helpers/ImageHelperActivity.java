@@ -23,19 +23,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.objtranslator.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.mlkit.vision.common.InputImage;
-import com.google.mlkit.vision.label.ImageLabel;
-import com.google.mlkit.vision.label.ImageLabeler;
-import com.google.mlkit.vision.label.ImageLabeling;
-import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 public class ImageHelperActivity extends AppCompatActivity {
 
@@ -43,10 +35,8 @@ public class ImageHelperActivity extends AppCompatActivity {
     private int REQUEST_CAPTURE_IMG = 1001;
     private ImageView inputImageView;
     private TextView outputTextView;
-
-    private ImageLabeler imageLabeler;
-
     private File photoFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +45,6 @@ public class ImageHelperActivity extends AppCompatActivity {
 
         inputImageView = findViewById(R.id.imageViewInput);
         outputTextView = findViewById(R.id.textViewOutput);
-
-        //Build image classification model that displays labels for objects w/ confidence >= 70%
-        imageLabeler = ImageLabeling.getClient(new ImageLabelerOptions.Builder()
-                .setConfidenceThreshold(0.7f)
-                .build()
-        );
 
         //Ask user for permission to read external storage first time around
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -71,15 +55,12 @@ public class ImageHelperActivity extends AppCompatActivity {
         }
     }
 
+    //Debug Permissions
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         Log.d(ImageHelperActivity.class.getSimpleName(), "grant result for " + permissions[0] + " is " + grantResults[0]);
-    }
-
-    protected TextView getOutputTextView() {
-        return outputTextView;
     }
 
     public void onPickImage(View view) {
@@ -134,30 +115,16 @@ public class ImageHelperActivity extends AppCompatActivity {
 
     //Classify images; display all objects w/ confidence >= 70%.
     //If no objects could be clearly identified, output 'Could not classify'
-    private void runClassification(Bitmap bitmap) {
-        InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
-        imageLabeler.process(inputImage).addOnSuccessListener(new OnSuccessListener<List<ImageLabel>>() {
-            @Override
-            public void onSuccess(@NonNull List<ImageLabel> imageLabels) {
-                if (imageLabels.size() > 0) {
-                    StringBuilder builder = new StringBuilder();
-                    for (ImageLabel label : imageLabels) {
-                        builder.append(label.getText())
-                                .append(" : ")
-                                .append(label.getConfidence())
-                                .append("\n");
-                    }
-                    outputTextView.setText(builder.toString());
-                } else {
-                    outputTextView.setText("Could not classify");
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                e.printStackTrace();
-            }
-        });
+    protected void runClassification(Bitmap bitmap) {
+
+    }
+
+    protected TextView getOutputTextView() {
+        return outputTextView;
+    }
+
+    protected ImageView getInputImageView() {
+        return inputImageView;
     }
 
     @Override
