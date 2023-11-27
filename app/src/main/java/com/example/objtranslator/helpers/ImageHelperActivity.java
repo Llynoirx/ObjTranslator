@@ -3,14 +3,17 @@ package com.example.objtranslator.helpers;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ImageDecoder;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +33,7 @@ import com.example.objtranslator.R;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -101,10 +105,10 @@ public class ImageHelperActivity extends AppCompatActivity {
         return file;
     }
 
-    //Load image from storage
-    private Bitmap loadFromUri(Uri uri) {
-        Bitmap bitmap = null;
 
+    //Load image from storage
+    private Bitmap loadFromUri(Uri uri) throws IOException {
+        Bitmap bitmap = null;
         try {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
                 ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), uri);
@@ -115,13 +119,14 @@ public class ImageHelperActivity extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         return bitmap;
     }
+
 
     //Classify images; display all objects w/ confidence >= 70%.
     //If no objects could be clearly identified, output 'Could not classify'
     protected void runClassification(Bitmap bitmap) {
-
     }
 
     protected TextView getOutputTextView() {
@@ -172,12 +177,36 @@ public class ImageHelperActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_PICK_IMG) {
                 uri = data.getData();
-                Bitmap bitmap = loadFromUri(uri);
+                Bitmap bitmap = null;
+                try {
+                    bitmap = loadFromUri(uri);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 inputImageView.setImageBitmap(bitmap);
                 runClassification(bitmap);
             } else if (requestCode == REQUEST_CAPTURE_IMG) {
                 Log.d("ML", "received callback from camera");
                 Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                ExifInterface exif = null;
+                try {
+                    exif = new ExifInterface(photoFile.getAbsolutePath());
+                    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+                    Log.d("EXIF", "Exif: " + orientation);
+                    Matrix matrix = new Matrix();
+                    if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+                        matrix.postRotate(90);
+                    }
+                    else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+                        matrix.postRotate(180);
+                    }
+                    else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                        matrix.postRotate(270);
+                    }
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true); // rotating bitmap
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 inputImageView.setImageBitmap(bitmap);
                 runClassification(bitmap);
             }
