@@ -4,6 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".image.ImageClassificationActivity">
+    tools:context=".other.ImageClassificationActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

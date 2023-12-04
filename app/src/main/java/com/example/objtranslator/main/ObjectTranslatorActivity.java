@@ -1,16 +1,13 @@
-package com.example.objtranslator.image;
+package com.example.objtranslator.main;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.example.objtranslator.R;
 import com.example.objtranslator.helpers.DotsOutline;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -30,7 +27,7 @@ import com.example.objtranslator.helpers.ImageHelperActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectDetectionActivity extends ImageHelperActivity {
+public class ObjectTranslatorActivity extends ImageHelperActivity {
 
     private ObjectDetector objectDetector;
 
@@ -58,7 +55,7 @@ public class ObjectDetectionActivity extends ImageHelperActivity {
         Translator translator = Translation.getClient(options);
 
         //Set up download process dialog
-        ProgressDialog progressDialog = new ProgressDialog(ObjectDetectionActivity.this);
+        ProgressDialog progressDialog = new ProgressDialog(ObjectTranslatorActivity.this);
         progressDialog.setMessage("Downloading the translation model...");
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -86,12 +83,12 @@ public class ObjectDetectionActivity extends ImageHelperActivity {
         Task<String> result = translator.translate(object).addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
             public void onSuccess(String s) {
-                Toast.makeText(ObjectDetectionActivity.this, s, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ObjectTranslatorActivity.this, s, Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ObjectDetectionActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ObjectTranslatorActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }

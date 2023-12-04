@@ -1,12 +1,11 @@
-package com.example.objtranslator;
+package com.example.objtranslator.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.example.objtranslator.helpers.ImageHelperActivity;
-import com.example.objtranslator.image.ImageClassificationActivity;
-import com.example.objtranslator.image.ObjectDetectionActivity;
+import com.example.objtranslator.R;
+import com.example.objtranslator.other.ImageClassificationActivity;
 
 import android.content.Intent;
 
@@ -31,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     //When clicking onGotoImage Button => Image Activity Page
     public void onGotoObjectDetection(View view){
         //start image helper activity
-        Intent intent = new Intent(this, ObjectDetectionActivity.class);
+        Intent intent = new Intent(this, ObjectTranslatorActivity.class);
         startActivity(intent);
     }
 }

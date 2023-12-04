@@ -1,4 +1,9 @@
-package com.example.objtranslator.image;
+/**
+ * This was just for learning and to see comparison between object detection and image classification
+ * Not used in app
+ */
+
+package com.example.objtranslator.other;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -13,8 +18,6 @@ import com.google.mlkit.vision.label.ImageLabel;
 import com.google.mlkit.vision.label.ImageLabeler;
 import com.google.mlkit.vision.label.ImageLabeling;
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
-import com.google.mlkit.vision.objects.ObjectDetection;
-import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
 
 import java.util.List;
 

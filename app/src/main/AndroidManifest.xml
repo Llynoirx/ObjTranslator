@@ -36,16 +36,16 @@
             android:name=".helpers.DotsOutline"
             android:exported="false" />
         <activity
-            android:name=".image.ImageClassificationActivity"
+            android:name=".other.ImageClassificationActivity"
             android:exported="false" />
         <activity
-            android:name=".image.ObjectDetectionActivity"
+            android:name=".main.ObjectTranslatorActivity"
             android:exported="false" />
         <activity
             android:name=".helpers.ImageHelperActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

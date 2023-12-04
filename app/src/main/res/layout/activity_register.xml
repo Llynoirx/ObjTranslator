@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/enterName"
+        android:id="@+id/name"
         android:layout_width="350dp"
         android:layout_height="50dp"
         android:layout_marginStart="20dp"
@@ -39,7 +39,7 @@
         app:layout_constraintVertical_bias="0.100000024" />
 
     <EditText
-        android:id="@+id/enterEmail"
+        android:id="@+id/email"
         android:layout_width="350dp"
         android:layout_height="50dp"
         android:layout_marginStart="20dp"
@@ -51,10 +51,10 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enterName" />
+        app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <EditText
-        android:id="@+id/enterPassword"
+        android:id="@+id/password"
         android:layout_width="350dp"
         android:layout_height="50dp"
         android:layout_marginStart="20dp"
@@ -66,10 +66,10 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enterEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/email" />
 
     <EditText
-        android:id="@+id/confirmPassword"
+        android:id="@+id/password2"
         android:layout_width="350dp"
         android:layout_height="50dp"
         android:layout_marginStart="20dp"
@@ -81,7 +81,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/enterPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <TextView
         android:id="@+id/haveAccount"
@@ -91,17 +91,17 @@
         android:text="Already have an account? Log in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signupButton" />
+        app:layout_constraintTop_toBottomOf="@+id/signupBtn" />
 
     <Button
-        android:id="@+id/signupButton"
+        android:id="@+id/signupBtn"
         android:layout_width="370dp"
         android:layout_height="50dp"
         android:layout_marginTop="60dp"
         android:text="Sign up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/confirmPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/password2" />
 
     <TextView
         android:id="@+id/guest"
@@ -112,6 +112,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/confirmPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/password2" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/haveAccount" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
