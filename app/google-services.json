@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "969100644415",
+    "project_id": "objtranslator-815d6",
+    "storage_bucket": "objtranslator-815d6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969100644415:android:9ec692877e05be9d6ae88a",
+        "android_client_info": {
+          "package_name": "com.example.objtranslator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLVJt-bcV0FoGEg66RuzeOTDikVSCGdOk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

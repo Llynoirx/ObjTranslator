@@ -1,14 +1,25 @@
 package com.example.objtranslator.image;
 
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.objtranslator.R;
 import com.example.objtranslator.helpers.DotsOutline;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.mlkit.common.model.DownloadConditions;
+import com.google.mlkit.nl.translate.Translation;
+import com.google.mlkit.nl.translate.Translator;
+import com.google.mlkit.nl.translate.TranslatorOptions;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.objects.DetectedObject;
 import com.google.mlkit.vision.objects.ObjectDetection;
@@ -38,6 +49,53 @@ public class ObjectDetectionActivity extends ImageHelperActivity {
         objectDetector = ObjectDetection.getClient(options);
     }
 
+    protected void runTranslation(String object){
+        //Create Translator from English to Chinese
+        TranslatorOptions options = new TranslatorOptions.Builder()
+                            .setTargetLanguage("zh")
+                            .setSourceLanguage("en")
+                            .build();
+        Translator translator = Translation.getClient(options);
+
+        //Set up download process dialog
+        ProgressDialog progressDialog = new ProgressDialog(ObjectDetectionActivity.this);
+        progressDialog.setMessage("Downloading the translation model...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        //Make sure the required translation model has been downloaded to the device
+        DownloadConditions conditions = new DownloadConditions.Builder()
+                .requireWifi()
+                .build();
+        translator.downloadModelIfNeeded(conditions)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void v) {
+                                // Model downloaded successfully. Okay to start translating.
+                                progressDialog.dismiss();
+                            }
+                        })
+                .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Model couldn’t be downloaded or other internal error.
+                                progressDialog.dismiss();
+                            }
+                        });
+
+        Task<String> result = translator.translate(object).addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                Toast.makeText(ObjectDetectionActivity.this, s, Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ObjectDetectionActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
     protected void runClassification(Bitmap bitmap){
         InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
@@ -56,6 +114,7 @@ public class ObjectDetectionActivity extends ImageHelperActivity {
                                             .append(object.getLabels().get(0).getConfidence()).append("\n");
                                     dots.add(new DotsOutline(object.getBoundingBox(), label));
                                     Log.d("ObjectDetection", "Object detected: " + label);
+                                    runTranslation(label);
                                 } else {
                                     builder.append("Unknown").append("\n");
                                 }

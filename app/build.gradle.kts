@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -41,6 +42,9 @@ dependencies {
     implementation("com.google.mlkit:image-labeling:17.0.5")
     //object detection
     implementation("com.google.mlkit:object-detection:16.2.6")
+    //text translation
+    implementation("com.google.mlkit:translate:17.0.1")
+    implementation("com.google.firebase:firebase-auth:22.3.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

@@ -126,8 +126,7 @@ public class ImageHelperActivity extends AppCompatActivity {
 
     //Classify images; display all objects w/ confidence >= 70%.
     //If no objects could be clearly identified, output 'Could not classify'
-    protected void runClassification(Bitmap bitmap) {
-    }
+    protected void runClassification(Bitmap bitmap) {}
 
     protected TextView getOutputTextView() {
         return outputTextView;
