@@ -14,8 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.objtranslator.R;
+import com.example.objtranslator.main.GuestActivity;
 import com.example.objtranslator.main.MainActivity;
-import com.example.objtranslator.main.ObjectTranslatorActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -25,7 +25,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     EditText mName, mEmail, mPassword, mPassword2;
     Button mSignupBtn;
-    TextView mGotoLogin;
+    TextView mGotoLogin, guest;
     FirebaseAuth fAuth;
     ProgressBar progressBar;
 
@@ -103,5 +103,19 @@ public class RegisterActivity extends AppCompatActivity {
                     });
                 }
             });
-        }
+        mGotoLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
+
+        guest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                startActivity(new Intent(getApplicationContext(), GuestActivity.class));
+            }
+        });
+
+    }
 }
