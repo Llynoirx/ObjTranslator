@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,7 @@ import java.util.List;
 public class ObjectTranslatorActivity extends ImageHelperActivity {
 
     private ObjectDetector objectDetector;
+    TextView translated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

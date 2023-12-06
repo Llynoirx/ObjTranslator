@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.objtranslator.R;
-import com.example.objtranslator.main.GuestActivity;
+//import com.example.objtranslator.main.GuestActivity;
 import com.example.objtranslator.main.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -110,12 +110,12 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        guest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                startActivity(new Intent(getApplicationContext(), GuestActivity.class));
-            }
-        });
+//        guest.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v){
+//                startActivity(new Intent(getApplicationContext(), GuestActivity.class));
+//            }
+//        });
 
     }
 }
