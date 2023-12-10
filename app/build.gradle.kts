@@ -35,7 +35,10 @@ android {
         mlModelBinding = true
     }
 
-    aaptOptions {
+    buildFeatures {
+        viewBinding = true
+    }
+    androidResources {
         noCompress("tflite")
     }
 }
@@ -58,6 +61,13 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite-support:0.1.0")
     implementation("org.tensorflow:tensorflow-lite-metadata:0.1.0")
     implementation("com.google.mlkit:object-detection-custom:17.0.1")
+
+    implementation("org.tensorflow:tensorflow-lite-task-vision:0.2.0")
+    // Import the GPU delegate plugin Library for GPU inference
+    implementation("org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.0")
+    implementation("org.tensorflow:tensorflow-lite-gpu:2.9.0")
+    implementation("com.google.firebase:firebase-ml-model-interpreter:18.0.0")
+    implementation("org.tensorflow:tensorflow-lite:1.13.1@aar")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
