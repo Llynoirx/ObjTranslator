@@ -29,9 +29,9 @@ public class ImageClassificationActivity extends ImageHelperActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Build image classification model that displays labels for objects w/ confidence >= 70%
+        //Build image classification model that displays labels for objects w/ confidence >= 60%
         imageLabeler = ImageLabeling.getClient(new ImageLabelerOptions.Builder()
-                .setConfidenceThreshold(0.7f)
+                .setConfidenceThreshold(0.6f)
                 .build()
         );
     }

@@ -31,7 +31,6 @@ import java.util.List;
 public class ObjectTranslatorActivity extends ImageHelperActivity {
 
     private ObjectDetector objectDetector;
-    TextView translated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +54,7 @@ public class ObjectTranslatorActivity extends ImageHelperActivity {
                             .setSourceLanguage("en")
                             .build();
         Translator translator = Translation.getClient(options);
+        String text = String.valueOf(editText.getText());
 
         //Set up download process dialog
         ProgressDialog progressDialog = new ProgressDialog(ObjectTranslatorActivity.this);
