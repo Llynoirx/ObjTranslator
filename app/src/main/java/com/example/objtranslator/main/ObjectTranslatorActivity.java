@@ -31,6 +31,7 @@ import java.util.List;
 public class ObjectTranslatorActivity extends ImageHelperActivity {
 
     private ObjectDetector objectDetector;
+    TextView translated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,6 @@ public class ObjectTranslatorActivity extends ImageHelperActivity {
                             .setSourceLanguage("en")
                             .build();
         Translator translator = Translation.getClient(options);
-        String text = String.valueOf(editText.getText());
 
         //Set up download process dialog
         ProgressDialog progressDialog = new ProgressDialog(ObjectTranslatorActivity.this);
@@ -109,15 +109,13 @@ public class ObjectTranslatorActivity extends ImageHelperActivity {
                                 if (!object.getLabels().isEmpty()) {
                                     //store first label
                                     String label = object.getLabels().get(0).getText();
-                                    builder.append(label).append(": ")
-                                            .append(object.getLabels().get(0).getConfidence()).append("\n");
+                                    builder.append(label).append("\n");
                                     dots.add(new DotsOutline(object.getBoundingBox(), label));
                                     Log.d("ObjectDetection", "Object detected: " + label);
                                     runTranslation(label);
-                                } else {
-                                    builder.append("Unknown").append("\n");
                                 }
                             }
+                            if(builder.length() == 0) builder.append("Unknown").append("\n");
                             getOutputTextView().setText(builder.toString());
                             drawDetectionResult(dots, bitmap);
                         } else {
