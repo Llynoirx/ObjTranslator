@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -25,26 +26,51 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TranslatorSelectionActivity extends AppCompatActivity {
+public class CameraUploadActivity extends AppCompatActivity {
 
+    private final int EXT_STORAGE_PERM_CODE = 0;
+    private final int CAMERA_PERM_CODE = 1;
+    private final int REQUEST_PICK_IMG = 2;
+    private final int REQUEST_CAPTURE_IMG = 3;
     private File photoFile;
-    private final int REQUEST_PICK_IMG = 1000;
-    private final int REQUEST_CAPTURE_IMG = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_translator_selection);
+        setContentView(R.layout.activity_camera_upload);
 
-        //Ask user for permission to read external storage first time around
+        //Ask user for permission to read external storage & access camera first time around
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                    PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, EXT_STORAGE_PERM_CODE);
+            }
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
             }
         }
     }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == EXT_STORAGE_PERM_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("Permission Status", "Permission granted for External Storage");
+            } else {
+                Log.d("Permission Status", "Permission denied for External Storage");
+            }
+        }
+
+        if (requestCode == CAMERA_PERM_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("Permission Status", "Permission granted for Camera");
+            } else {
+                Log.d("Permission Status", "Permission denied for Camera");
+            }
+        }
+    }
+
 
     public void onPickImage(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -86,11 +112,6 @@ public class TranslatorSelectionActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
         return bitmap;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
 
