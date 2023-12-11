@@ -28,13 +28,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void continueAsGuest(View view){
-        setContentView(R.layout.activity_translate_actions);
+        setContentView(R.layout.activity_translator_selection);
     }
 
     public void onGotoTranslate(View view){
-//        Intent intent = new Intent(this, ObjTranslatorActivity.class);
-//        startActivity(intent);
-        setContentView(R.layout.activity_translate_actions);
+        Intent intent = new Intent(this, ObjTranslatorActivity.class);
+        startActivity(intent);
     }
 
     public void logout(View view) {

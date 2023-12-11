@@ -34,7 +34,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.mlkit.common.model.DownloadConditions;
-import com.google.mlkit.common.model.LocalModel;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
@@ -42,7 +41,6 @@ import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.objects.DetectedObject;
 import com.google.mlkit.vision.objects.ObjectDetection;
 import com.google.mlkit.vision.objects.ObjectDetector;
-import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
 
 import java.io.File;
@@ -54,7 +52,6 @@ import java.util.List;
 
 public class ObjTranslatorActivity extends AppCompatActivity {
 
-    private File photoFile;
     private int REQUEST_PICK_IMG = 1000;
     private int REQUEST_CAPTURE_IMG = 1001;
     private ImageView imgView;
@@ -95,59 +92,13 @@ public class ObjTranslatorActivity extends AppCompatActivity {
 //                        .build();
 //
 //        objectDetector = ObjectDetection.getClient(options);
-
-        //Ask user for permission to read external storage first time around
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) !=
-                    PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
-            }
-        }
     }
 
-    public void onPickImage(View view) {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_PICK_IMG);
-    }
+    public void setBitmap(Bitmap bitmap) {Log.d("Success", "Received bitmap");}
 
-    public void onStartCamera(View view) {
-        photoFile = createPhotoFile();
-        Uri fileUri = FileProvider.getUriForFile(this, "com.example.fileprovider", photoFile);
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-        startActivityForResult(intent, REQUEST_CAPTURE_IMG);
-    }
 
-    private File createPhotoFile() {
-        File photoFileDir = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ML_IMAGE_HELPER");
-        //Create directory to store photos taken by camera (if it doesnt already exist)
-        if (!photoFileDir.exists()) {
-            photoFileDir.mkdirs();
-        }
-        //Create image file and name it in date-time format
-        String name = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File file = new File(photoFileDir.getPath() + File.separator + name);
-        return file;
-    }
 
-    //Load image from storage
-    private Bitmap loadFromUri(Uri uri) throws IOException {
-        Bitmap bitmap = null;
-        try {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
-                ImageDecoder.Source source = ImageDecoder.createSource(getContentResolver(), uri);
-                bitmap = ImageDecoder.decodeBitmap(source);
-            } else {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return bitmap;
-    }
-
-    protected void runTranslation(String object){
+    private void runTranslation(String object){
         //Create Translator from English to Chinese
         TranslatorOptions options = new TranslatorOptions.Builder()
                 .setTargetLanguage("zh")
@@ -265,45 +216,9 @@ public class ObjTranslatorActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        //Display image once user selects it + classifies it
-        Uri uri;
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_PICK_IMG) {
-                uri = data.getData();
-                Bitmap bitmap = null;
-                try {
-                    bitmap = loadFromUri(uri);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                imgView.setImageBitmap(bitmap);
-                runClassification(bitmap);
-            } else if (requestCode == REQUEST_CAPTURE_IMG) {
-                Log.d("ML", "received callback from camera");
-                Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                ExifInterface exif = null;
-                try {
-                    exif = new ExifInterface(photoFile.getAbsolutePath());
-                    int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
-                    Log.d("EXIF", "Exif: " + orientation);
-                    Matrix matrix = new Matrix();
-                    if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
-                        matrix.postRotate(90);
-                    }
-                    else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
-                        matrix.postRotate(180);
-                    }
-                    else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-                        matrix.postRotate(270);
-                    }
-                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true); // rotating bitmap
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                imgView.setImageBitmap(bitmap);
-                runClassification(bitmap);
-            }
-        }
+        Bitmap bitmap = null;
+        setBitmap(bitmap);
+        imgView.setImageBitmap(bitmap);
+        runClassification(bitmap);
     }
 }
