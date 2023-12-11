@@ -28,7 +28,7 @@ import com.example.objtranslator.helpers.ImageHelperActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ObjectTranslatorActivity extends ImageHelperActivity {
+public class ObjTranslatorActivity extends ImageHelperActivity {
 
     private ObjectDetector objectDetector;
     TextView translated;
@@ -57,7 +57,7 @@ public class ObjectTranslatorActivity extends ImageHelperActivity {
         Translator translator = Translation.getClient(options);
 
         //Set up download process dialog
-        ProgressDialog progressDialog = new ProgressDialog(ObjectTranslatorActivity.this);
+        ProgressDialog progressDialog = new ProgressDialog(ObjTranslatorActivity.this);
         progressDialog.setMessage("Downloading the translation model...");
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -85,12 +85,12 @@ public class ObjectTranslatorActivity extends ImageHelperActivity {
         Task<String> result = translator.translate(object).addOnSuccessListener(new OnSuccessListener<String>() {
             @Override
             public void onSuccess(String s) {
-                Toast.makeText(ObjectTranslatorActivity.this, s, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ObjTranslatorActivity.this, s, Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ObjectTranslatorActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ObjTranslatorActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
             }
         });
     }

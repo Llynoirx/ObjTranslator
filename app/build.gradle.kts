@@ -30,6 +30,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        mlModelBinding = true
+    }
+
+    aaptOptions {
+        noCompress("tflite")
+    }
 }
 
 dependencies {
@@ -40,12 +47,20 @@ dependencies {
 
     //image classification
     implementation("com.google.mlkit:image-labeling:17.0.5")
+    implementation("com.google.firebase:firebase-ml-vision:24.0.3")
     //object detection
     implementation("com.google.mlkit:object-detection:16.2.6")
     //text translation
     implementation("com.google.mlkit:translate:17.0.1")
     //sign in
     implementation("com.google.firebase:firebase-auth:22.3.0")
+    //custom obj detection
+    implementation("com.google.mlkit:object-detection-custom:17.0.1")
+    implementation("org.tensorflow:tensorflow-lite-support:0.1.0")
+    implementation("org.tensorflow:tensorflow-lite-metadata:0.1.0")
+    implementation("com.google.mlkit:object-detection-custom:17.0.1")
+    //custom img detection
+    implementation("com.google.mlkit:image-labeling-custom:16.3.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

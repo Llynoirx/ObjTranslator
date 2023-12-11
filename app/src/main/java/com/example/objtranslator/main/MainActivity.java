@@ -19,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
     //Homepage
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView((R.layout.activity_main));
+        //setContentView(R.layout.activity_register);
     }
 
     public void onGotoImageActivity(View view){
@@ -28,7 +29,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onGotoObjectDetection(View view){
-        Intent intent = new Intent(this, ObjectTranslatorActivity.class);
+        Intent intent = new Intent(this, ObjTranslatorActivity.class);
+        startActivity(intent);
+    }
+
+    public void onGotoCustomObjectDetection(View view){
+        Intent intent = new Intent(this, CustomObjTranslator.class);
         startActivity(intent);
     }
 
