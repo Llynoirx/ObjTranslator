@@ -6,26 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ImageDecoder;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.media.ExifInterface;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
 
-import android.Manifest;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,21 +31,17 @@ import com.google.mlkit.vision.objects.ObjectDetection;
 import com.google.mlkit.vision.objects.ObjectDetector;
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ObjTranslatorActivity extends AppCompatActivity {
 
-    private int REQUEST_PICK_IMG = 1000;
-    private int REQUEST_CAPTURE_IMG = 1001;
     private ImageView imgView;
     private TextView srcView;
     private TextView targView;
     private ObjectDetector objectDetector;
+
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +78,10 @@ public class ObjTranslatorActivity extends AppCompatActivity {
 //        objectDetector = ObjectDetection.getClient(options);
     }
 
-    public void setBitmap(Bitmap bitmap) {Log.d("Success", "Received bitmap");}
+    public void getBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+        Log.d("Success", "Received bitmap");
+    }
 
 
 
@@ -216,8 +203,6 @@ public class ObjTranslatorActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Bitmap bitmap = null;
-        setBitmap(bitmap);
         imgView.setImageBitmap(bitmap);
         runClassification(bitmap);
     }

@@ -105,7 +105,7 @@ public class TranslatorSelectionActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                objTranslator.setBitmap(bitmap);
+                objTranslator.getBitmap(bitmap); //sends bitmap to ObjTranslatorActivity
             } else if (requestCode == REQUEST_CAPTURE_IMG) {
                 Log.d("ML", "received callback from camera");
                 Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
@@ -125,7 +125,7 @@ public class TranslatorSelectionActivity extends AppCompatActivity {
                         matrix.postRotate(270);
                     }
                     bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true); // rotating bitmap
-                    objTranslator.setBitmap(bitmap);
+                    objTranslator.getBitmap(bitmap); //sends bitmap to ObjTranslatorActivity
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
