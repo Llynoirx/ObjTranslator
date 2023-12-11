@@ -71,7 +71,6 @@ public class CameraUploadActivity extends AppCompatActivity {
         }
     }
 
-
     public void onPickImage(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
@@ -80,10 +79,12 @@ public class CameraUploadActivity extends AppCompatActivity {
 
     public void onStartCamera(View view) {
         photoFile = createPhotoFile();
-        Uri fileUri = FileProvider.getUriForFile(this, "com.example.fileprovider", photoFile);
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-        startActivityForResult(intent, REQUEST_CAPTURE_IMG);
+        if(photoFile != null){
+            Uri fileUri = FileProvider.getUriForFile(this, "com.example.fileprovider", photoFile);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+            startActivityForResult(intent, REQUEST_CAPTURE_IMG);
+        }
     }
 
     private File createPhotoFile() {

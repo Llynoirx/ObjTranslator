@@ -1,10 +1,8 @@
 package com.example.objtranslator;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -87,47 +85,37 @@ public class ObjTranslatorActivity extends AppCompatActivity {
     private void runTranslation(String object){
         //Create Translator from English to Chinese
         TranslatorOptions options = new TranslatorOptions.Builder()
-                .setTargetLanguage("zh")
-                .setSourceLanguage("en")
-                .build();
+            .setSourceLanguage("en")
+            .setTargetLanguage("zh")
+            .build();
         Translator translator = Translation.getClient(options);
 
-        //Set up download process dialog
+        DownloadConditions conditions = new DownloadConditions.Builder()
+            .requireWifi()
+            .build();
+
         ProgressDialog progressDialog = new ProgressDialog(ObjTranslatorActivity.this);
         progressDialog.setMessage("Downloading the translation model...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        //Make sure the required translation model has been downloaded to the device
-        DownloadConditions conditions = new DownloadConditions.Builder()
-                .requireWifi()
-                .build();
         translator.downloadModelIfNeeded(conditions)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void v) {
+                .addOnCompleteListener(task -> {
+                    progressDialog.dismiss(); //Dismiss dialog regardless of success or failure
+                    if (task.isSuccessful()) {
                         // Model downloaded successfully. Okay to start translating.
-                        progressDialog.dismiss();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                        translator.translate(object)
+                                .addOnSuccessListener(s -> showToast(s))
+                                .addOnFailureListener(e -> showToast(e.getMessage()));
+                    } else {
                         // Model couldn’t be downloaded or other internal error.
-                        progressDialog.dismiss();
+                        showToast("Translation model download failed.");
                     }
                 });
-        Task<String> result = translator.translate(object).addOnSuccessListener(new OnSuccessListener<String>() {
-            @Override
-            public void onSuccess(String s) {
-                Toast.makeText(ObjTranslatorActivity.this, s, Toast.LENGTH_SHORT).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ObjTranslatorActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    }
+
+    private void showToast(String message) {
+        runOnUiThread(() -> Toast.makeText(ObjTranslatorActivity.this, message, Toast.LENGTH_SHORT).show());
     }
 
     //Classify images; display all objects w/ confidence >= 70%.
