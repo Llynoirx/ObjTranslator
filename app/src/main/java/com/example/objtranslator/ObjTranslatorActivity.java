@@ -41,8 +41,6 @@ public class ObjTranslatorActivity extends AppCompatActivity {
     private TextView targView;
     private ObjectDetector objectDetector;
 
-    private Bitmap bitmap;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,13 +74,14 @@ public class ObjTranslatorActivity extends AppCompatActivity {
 //                        .build();
 //
 //        objectDetector = ObjectDetection.getClient(options);
-    }
 
-    public void getBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-        Log.d("Success", "Received bitmap");
-    }
+        Bitmap bitmap = getIntent().getParcelableExtra("bitmapExtra");
 
+        if (bitmap != null) {
+            imgView.setImageBitmap(bitmap);
+            runClassification(bitmap);
+        }
+    }
 
 
     private void runTranslation(String object){
@@ -200,10 +199,5 @@ public class ObjTranslatorActivity extends AppCompatActivity {
         }
         imgView.setImageBitmap(outputBitmap);
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        imgView.setImageBitmap(bitmap);
-        runClassification(bitmap);
-    }
+
 }

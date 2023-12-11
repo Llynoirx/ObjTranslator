@@ -89,10 +89,14 @@ public class TranslatorSelectionActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        ObjTranslatorActivity objTranslator = new ObjTranslatorActivity();
 
         //Display image once user selects it + classifies it
         Uri uri;
@@ -105,7 +109,9 @@ public class TranslatorSelectionActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                objTranslator.getBitmap(bitmap); //sends bitmap to ObjTranslatorActivity
+                Intent intent = new Intent(this, ObjTranslatorActivity.class);
+                intent.putExtra("bitmapExtra", bitmap);
+                startActivity(intent);
             } else if (requestCode == REQUEST_CAPTURE_IMG) {
                 Log.d("ML", "received callback from camera");
                 Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
@@ -125,13 +131,13 @@ public class TranslatorSelectionActivity extends AppCompatActivity {
                         matrix.postRotate(270);
                     }
                     bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true); // rotating bitmap
-                    objTranslator.getBitmap(bitmap); //sends bitmap to ObjTranslatorActivity
+                    Intent intent = new Intent(this, ObjTranslatorActivity.class);
+                    intent.putExtra("bitmapExtra", bitmap);
+                    startActivity(intent);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
-        Intent intent = new Intent(this, ObjTranslatorActivity.class);
-        startActivity(intent);
     }
 }
