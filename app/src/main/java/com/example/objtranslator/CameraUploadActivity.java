@@ -71,7 +71,7 @@ public class CameraUploadActivity extends AppCompatActivity {
         }
     }
 
-    public void onPickImage(View view) {
+    public void onUploadImage(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_PICK_IMG);
