@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".helpers.ImageHelperActivity">
+    tools:context="ObjTranslatorActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#727CB1"
+        android:background="#CDDAEA"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -19,6 +19,7 @@
             android:id="@+id/homeBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#005EDD"
             android:onClick="onGotoHomePage"
             android:text="Home"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -32,6 +33,7 @@
             android:id="@+id/translateBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#005EDD"
             android:onClick="onGotoTranslate"
             android:text="Translate"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -40,5 +42,4 @@
             app:layout_constraintStart_toEndOf="@+id/homeBtn"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

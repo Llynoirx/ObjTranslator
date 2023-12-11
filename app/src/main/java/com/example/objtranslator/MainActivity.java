@@ -23,9 +23,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_homepage);
     }
 
+    public void gotoLogin(View view){
+        setContentView(R.layout.activity_login);
+    }
+
+    public void continueAsGuest(View view){
+        setContentView(R.layout.activity_translate_actions);
+    }
+
     public void onGotoTranslate(View view){
-        Intent intent = new Intent(this, ObjTranslatorActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, ObjTranslatorActivity.class);
+//        startActivity(intent);
         setContentView(R.layout.activity_translate_actions);
     }
 

@@ -68,6 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Continue as guest?"
+        android:onClick="continueAsGuest"
         android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
