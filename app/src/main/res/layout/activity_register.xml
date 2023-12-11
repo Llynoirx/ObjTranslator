@@ -89,7 +89,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Already have an account? Log in"
-        android:onClick="gotoLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signupBtn" />
@@ -100,7 +99,6 @@
         android:layout_height="50dp"
         android:layout_marginTop="60dp"
         android:text="Sign up"
-        android:onClick="gotoHomepage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password2" />
@@ -111,7 +109,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Continue as guest?"
-        android:onClick="continueAsGuest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
         app:layout_constraintStart_toStartOf="parent"

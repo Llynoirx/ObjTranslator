@@ -30,8 +30,8 @@ public class CameraUploadActivity extends AppCompatActivity {
 
     private final int EXT_STORAGE_PERM_CODE = 0;
     private final int CAMERA_PERM_CODE = 1;
-    private final int REQUEST_PICK_IMG = 2;
-    private final int REQUEST_CAPTURE_IMG = 3;
+    private final int REQUEST_PICK_IMG = 1000;
+    private final int REQUEST_CAPTURE_IMG = 1001;
     private File photoFile;
 
     @Override
@@ -45,31 +45,31 @@ public class CameraUploadActivity extends AppCompatActivity {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, EXT_STORAGE_PERM_CODE);
             }
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
-            }
+//            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
+//            }
         }
     }
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == EXT_STORAGE_PERM_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("Permission Status", "Permission granted for External Storage");
-            } else {
-                Log.d("Permission Status", "Permission denied for External Storage");
-            }
-        }
-
-        if (requestCode == CAMERA_PERM_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d("Permission Status", "Permission granted for Camera");
-            } else {
-                Log.d("Permission Status", "Permission denied for Camera");
-            }
-        }
-    }
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//
+//        if (requestCode == EXT_STORAGE_PERM_CODE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Log.d("Permission Status", "Permission granted for External Storage");
+//            } else {
+//                Log.d("Permission Status", "Permission denied for External Storage");
+//            }
+//        }
+//
+//        if (requestCode == CAMERA_PERM_CODE) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Log.d("Permission Status", "Permission granted for Camera");
+//            } else {
+//                Log.d("Permission Status", "Permission denied for Camera");
+//            }
+//        }
+//    }
 
     public void onUploadImage(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
