@@ -15,7 +15,8 @@
         android:cropToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:clickable="true" />
 <!--        app:srcCompat="@android:drawable/ic_menu_camera" -->
 
     <TextView

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -100,29 +101,28 @@ public class ObjTranslatorActivity extends AppCompatActivity {
     protected void runClassification(Bitmap bitmap) {
         InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
         objectDetector.process(inputImage)
-                .addOnSuccessListener(new OnSuccessListener<List<DetectedObject>>() {
-                    @Override
-                    public void onSuccess(@NonNull List<DetectedObject> detectedObjects) {
-                        if (!detectedObjects.isEmpty()) {
-                            List<ObjInfo> objects = new ArrayList<>();
-                            for (DetectedObject object : detectedObjects) {
-                                if (!object.getLabels().isEmpty()) {
-                                    String label = object.getLabels().get(0).getText();
-                                    if (label != null && !label.isEmpty()) {
-                                        objects.add(new ObjInfo(object.getBoundingBox(), label));
-                                        Log.d("ObjectDetection", "Object detected: " + label);
-                                    }
-                                }
+                .addOnSuccessListener(detectedObjects -> {
+                    List<ObjInfo> objects = new ArrayList<>();
+                    for (DetectedObject object : detectedObjects) {
+                        if (!object.getLabels().isEmpty()) {
+                            String label = object.getLabels().get(0).getText();
+                            if (label != null && !label.isEmpty()) {
+                                objects.add(new ObjInfo(object.getBoundingBox(), label));
+                                Log.d("ObjectDetection", "Object detected: " + label);
                             }
-                            drawDetectionResult(objects, bitmap);
+                        }
+                    }
+                    if(!objects.isEmpty()){
+                        drawDetectionResult(objects, bitmap);
+                        imgView.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                float clickX = event.getX();
+                                float clickY = event.getY();
+                                int action = event.getAction();
 
-                            // Now, set the OnClickListener after drawDetectionResult
-                            imgView.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    // Handle click event, retrieve and display the correct object label
-                                    float clickX = v.getX(); // X coordinate relative to the view
-                                    float clickY = v.getY(); // Y coordinate relative to the view
+                                // Handle touch events
+                                if (action == MotionEvent.ACTION_UP) {
                                     int clickedIndex = findClickedObjectIndex(clickX, clickY, objects);
                                     if (clickedIndex != -1 && clickedIndex < objects.size()) {
                                         ObjInfo clickedObject = objects.get(clickedIndex);
@@ -130,22 +130,19 @@ public class ObjTranslatorActivity extends AppCompatActivity {
                                         srcView.setText(clickedLabel);
                                     }
                                 }
-                            });
-                            if (objects.isEmpty()) {
-                                srcView.setText("Unknown");
+                                return true;
                             }
-                        } else {
-                            srcView.setText("Could not detect");
-                        }
+                        });
+                    } else {
+                        srcView.setText("Unknown Object");
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        e.printStackTrace();
-                    }
+                .addOnFailureListener(e -> {
+                    e.printStackTrace();
+                    srcView.setText("Could not detect any objects");
                 });
     }
+
 
 
 
@@ -156,6 +153,8 @@ public class ObjTranslatorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_translate_img);
 
         imgView = findViewById(R.id.image);
+        srcView = findViewById(R.id.srcLangObj);
+        targView = findViewById(R.id.targLangObj);
 
         String filePath = getIntent().getStringExtra("filePath");
             try {
@@ -179,6 +178,7 @@ public class ObjTranslatorActivity extends AppCompatActivity {
                 e.printStackTrace();
                 showToast("Error during object detection: " + e.getMessage());
             }
+        // Now, set the OnClickListener after drawDetectionResult
 
         //Multiple object detection in static images
 //        LocalModel localModel = new LocalModel.Builder()
