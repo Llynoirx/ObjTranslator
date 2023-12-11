@@ -32,7 +32,6 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        //Set variables
         mName = findViewById(R.id.name);
         mEmail = findViewById(R.id.email);
         mPassword = findViewById(R.id.password);
@@ -43,77 +42,77 @@ public class RegisterActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         progressBar = findViewById(R.id.progressBar);
 
-        if(fAuth.getCurrentUser() != null) {
+        if (fAuth.getCurrentUser() != null) {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         }
 
         mSignupBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 String name = mName.getText().toString().trim();
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
                 String password2 = mPassword2.getText().toString().trim();
 
-                //Check if inputs are valid
-                if(TextUtils.isEmpty(name)) {
-                    mName.setError("Name is Required.");
-                    return;
-                }
-                if(TextUtils.isEmpty(email)) {
-                    mEmail.setError("Email is Required.");
-                    return;
-                }
-                if(TextUtils.isEmpty(password)) {
-                    mPassword.setError("Password is Required.");
-                    return;
-                }
-                if(password.length() < 6) {
-                    mPassword.setError("Password Must be >= 6 Characters");
-                    return;
-                }
-                if(TextUtils.isEmpty(password2)) {
-                    mPassword2.setError("Confirm your password");
-                    return;
-                }
-                if(!password.equals(password2)) {
-                    mPassword2.setError("Passwords don't match");
-                    return;
-                }
-
-                //Input is valid, register user in firebase
+                if(!validateInputs(mName, mEmail, mPassword, mPassword2, name, email, password, password2)) return;
                 progressBar.setVisibility(View.VISIBLE);
 
-                fAuth.createUserWithEmailAndPassword(email,password)
+                fAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                if(task.isSuccessful()) {
+                                progressBar.setVisibility(View.GONE); // Hide progress bar
+                                if (task.isSuccessful()) {
                                     Toast.makeText(RegisterActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                    finish();
                                 } else {
                                     Toast.makeText(RegisterActivity.this,
-                                                   "Error! " + task.getException().getMessage(),
-                                                    Toast.LENGTH_SHORT).show();
+                                            "Error! " + task.getException().getMessage(),
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             }
-                    });
-                }
-            });
-        mGotoLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                        });
             }
         });
 
-//        guest.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v){
-//                startActivity(new Intent(getApplicationContext(), GuestActivity.class));
-//            }
-//        });
+        mGotoLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+            }
+        });
+    }
 
+    private boolean validateInputs(EditText mName, EditText mEmail, EditText mPassword, EditText mPassword2,
+                                String name, String email, String password, String password2) {
+        boolean valid = true;
+
+        if (TextUtils.isEmpty(name)) {
+            mName.setError("Name is Required.");
+            valid = false;
+        }
+        if (TextUtils.isEmpty(email)) {
+            mEmail.setError("Email is Required.");
+            valid = false;
+        }
+        if (TextUtils.isEmpty(password)) {
+            mPassword.setError("Password is Required.");
+            valid = false;
+        }
+        if (password.length() < 6) {
+            mPassword.setError("Password Must be >= 6 Characters");
+            valid = false;
+        }
+        if (TextUtils.isEmpty(password2)) {
+            mPassword2.setError("Confirm your password");
+            valid = false;
+        }
+        if (!password.equals(password2)) {
+            mPassword2.setError("Passwords don't match");
+            valid = false;
+        }
+        return valid;
     }
 }
