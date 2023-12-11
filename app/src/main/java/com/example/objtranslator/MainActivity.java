@@ -1,11 +1,9 @@
-package com.example.objtranslator.main;
+package com.example.objtranslator;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.example.objtranslator.R;
-import com.example.objtranslator.onboarding.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import android.content.Intent;
@@ -18,19 +16,18 @@ public class MainActivity extends AppCompatActivity {
     //Homepage
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView((R.layout.activity_main));
-        //setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_register);
     }
 
-    public void onGotoObjDetection(View view){
+    public void onGotoHomePage(View view){
+        setContentView(R.layout.activity_homepage);
+    }
+
+    public void onGotoTranslate(View view){
         Intent intent = new Intent(this, ObjTranslatorActivity.class);
         startActivity(intent);
+        setContentView(R.layout.activity_translate_actions);
     }
-
-//    public void onGotoCustomObjDetection(View view){
-////        Intent intent = new Intent(this, CustomObjTranslator.class);
-////        startActivity(intent);
-//    }
 
     public void logout(View view) {
         FirebaseAuth.getInstance().signOut();

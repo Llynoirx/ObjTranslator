@@ -1,12 +1,12 @@
-package com.example.objtranslator.helpers;
+package com.example.objtranslator;
 
 import android.graphics.Rect;
 
-public class DotsOutline {
+public class BoundingBoxActivity {
     public Rect rect;
     public String label;
 
-    public DotsOutline(Rect rect, String label) {
+    public BoundingBoxActivity(Rect rect, String label) {
         this.rect = rect;
         this.label = label;
     }

@@ -19,10 +19,10 @@
             android:name=".main.CustomObjTranslator"
             android:exported="false" />
         <activity
-            android:name=".onboarding.LoginActivity"
+            android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".onboarding.RegisterActivity"
+            android:name=".RegisterActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".helpers.DotsOutline"
+            android:name=".BoundingBoxActivity"
             android:exported="false" />
         <activity
             android:name=".other.ImageClassificationActivity"
@@ -43,7 +43,7 @@
             android:name=".helpers.ImageHelperActivity"
             android:exported="false" />
         <activity
-            android:name=".main.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
