@@ -108,7 +108,7 @@ public class ObjTranslatorActivity extends AppCompatActivity {
                                 .addOnSuccessListener(s -> showToast(s))
                                 .addOnFailureListener(e -> showToast(e.getMessage()));
                     } else {
-                        // Model couldn’t be downloaded or other internal error.
+                        // Model couldn’t be downloaded/other internal error.
                         showToast("Translation model download failed.");
                     }
                 });
@@ -136,7 +136,7 @@ public class ObjTranslatorActivity extends AppCompatActivity {
                                     builder.append(label).append("\n");
                                     dots.add(new BoundingBoxActivity(object.getBoundingBox(), label));
                                     Log.d("ObjectDetection", "Object detected: " + label);
-                                    runTranslation(label);
+                                    //runTranslation(label);
                                 }
                             }
                             if(builder.length() == 0) builder.append("Unknown").append("\n");

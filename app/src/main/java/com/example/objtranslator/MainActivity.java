@@ -12,28 +12,41 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    @Override
-    //Homepage
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
+    private boolean userIsRegistered() {
+        return false;
     }
 
-    public void onGotoHomePage(View view){
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (userIsRegistered()) {
+            setContentView(R.layout.activity_homepage);
+        } else {
+            Intent intent = new Intent(this, RegisterActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    public void gotoHomePage(View view) {
         setContentView(R.layout.activity_homepage);
     }
 
-    public void gotoLogin(View view){
+    public void gotoLogin(View view) {
         setContentView(R.layout.activity_login);
     }
 
-    public void continueAsGuest(View view){
+    public void gotoRegister(View view) {
+        setContentView(R.layout.activity_register);
+    }
+
+    public void continueAsGuest(View view) {
+        // Assuming this is a guest mode
         Intent intent = new Intent(this, ObjTranslatorActivity.class);
         startActivity(intent);
     }
 
-    public void onGotoTranslate(View view){
+    public void gotoTranslate(View view) {
         Intent intent = new Intent(this, ObjTranslatorActivity.class);
         startActivity(intent);
     }
