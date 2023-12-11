@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -149,19 +150,29 @@ public class ObjTranslatorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        imgView = findViewById(R.id.image);
-        srcView = findViewById(R.id.srcLangObj);
-        targView = findViewById(R.id.targLangObj);
+        setContentView(R.layout.activity_translate_img);
 
-        Bitmap bitmap = getIntent().getParcelableExtra("bitmapExtra");
-        if (bitmap != null) {
+        imgView = findViewById(R.id.image);
+
+        String filePath = getIntent().getStringExtra("filePath");
+        if (filePath != null) {
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
             imgView.setImageBitmap(bitmap);
-            //runClassification(bitmap);
         } else {
-            showToast("Bitmap is null");
+            showToast("File path is null");
         }
 
-        setContentView(R.layout.activity_translate_img);
+//        imgView = findViewById(R.id.image);
+//        srcView = findViewById(R.id.srcLangObj);
+//        targView = findViewById(R.id.targLangObj);
+
+//        Bitmap bitmap = getIntent().getParcelableExtra("bitmapExtra");
+//        if (bitmap != null) {
+//            imgView.setImageBitmap(bitmap);
+//            //runClassification(bitmap);
+//        } else {
+//            showToast("Bitmap is null");
+//        }
 
         //Multiple object detection in static images
 //        ObjectDetectorOptions options =

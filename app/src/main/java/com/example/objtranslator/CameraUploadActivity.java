@@ -22,14 +22,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class CameraUploadActivity extends AppCompatActivity {
 
-    private final int EXT_STORAGE_PERM_CODE = 0;
-    private final int CAMERA_PERM_CODE = 1;
     private final int REQUEST_PICK_IMG = 1000;
     private final int REQUEST_CAPTURE_IMG = 1001;
     private File photoFile;
@@ -43,33 +42,11 @@ public class CameraUploadActivity extends AppCompatActivity {
         //Ask user for permission to read external storage & access camera first time around
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, EXT_STORAGE_PERM_CODE);
+                requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 0);
             }
-//            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//                requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERM_CODE);
-//            }
         }
     }
 
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//
-//        if (requestCode == EXT_STORAGE_PERM_CODE) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Log.d("Permission Status", "Permission granted for External Storage");
-//            } else {
-//                Log.d("Permission Status", "Permission denied for External Storage");
-//            }
-//        }
-//
-//        if (requestCode == CAMERA_PERM_CODE) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Log.d("Permission Status", "Permission granted for Camera");
-//            } else {
-//                Log.d("Permission Status", "Permission denied for Camera");
-//            }
-//        }
-//    }
 
     public void onUploadImage(View view) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -115,6 +92,18 @@ public class CameraUploadActivity extends AppCompatActivity {
         return bitmap;
     }
 
+    private String saveBitmapToFile(Bitmap bitmap) {
+        try {
+            File photoFile = createPhotoFile();
+            FileOutputStream outputStream = new FileOutputStream(photoFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+            return photoFile.getAbsolutePath();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -131,8 +120,11 @@ public class CameraUploadActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                // Save bitmap to a file
+                String filePath = saveBitmapToFile(bitmap);
+                // Pass the file path to the next activity
                 Intent intent = new Intent(this, ObjTranslatorActivity.class);
-                intent.putExtra("bitmapExtra", bitmap);
+                intent.putExtra("filePath", filePath);
                 startActivity(intent);
             } else if (requestCode == REQUEST_CAPTURE_IMG) {
                 Log.d("ML", "received callback from camera");
@@ -153,8 +145,11 @@ public class CameraUploadActivity extends AppCompatActivity {
                         matrix.postRotate(270);
                     }
                     bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true); // rotating bitmap
+                    // Save bitmap to a file
+                    String filePath = saveBitmapToFile(bitmap);
+                    // Pass the file path to the next activity
                     Intent intent = new Intent(this, ObjTranslatorActivity.class);
-                    intent.putExtra("bitmapExtra", bitmap);
+                    intent.putExtra("filePath", filePath);
                     startActivity(intent);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
