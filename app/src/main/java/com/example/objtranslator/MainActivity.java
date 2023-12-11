@@ -16,7 +16,8 @@ public class MainActivity extends AppCompatActivity {
     //Homepage
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
     }
 
     public void onGotoHomePage(View view){
@@ -28,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void continueAsGuest(View view){
-        setContentView(R.layout.activity_translator_selection);
+        Intent intent = new Intent(this, ObjTranslatorActivity.class);
+        startActivity(intent);
     }
 
     public void onGotoTranslate(View view){
