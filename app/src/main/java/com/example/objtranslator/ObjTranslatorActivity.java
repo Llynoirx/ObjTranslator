@@ -155,34 +155,27 @@ public class ObjTranslatorActivity extends AppCompatActivity {
         imgView = findViewById(R.id.image);
 
         String filePath = getIntent().getStringExtra("filePath");
-        if (filePath != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-            imgView.setImageBitmap(bitmap);
-        } else {
-            showToast("File path is null");
-        }
+            try {
+                if (filePath != null) {
+                    //Multiple object detection in static images
+                    ObjectDetectorOptions options =
+                            new ObjectDetectorOptions.Builder()
+                                    .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
+                                    .enableMultipleObjects()
+                                    .enableClassification()
+                                    .build();
+                    objectDetector = ObjectDetection.getClient(options);
 
-//        imgView = findViewById(R.id.image);
-//        srcView = findViewById(R.id.srcLangObj);
-//        targView = findViewById(R.id.targLangObj);
-
-//        Bitmap bitmap = getIntent().getParcelableExtra("bitmapExtra");
-//        if (bitmap != null) {
-//            imgView.setImageBitmap(bitmap);
-//            //runClassification(bitmap);
-//        } else {
-//            showToast("Bitmap is null");
-//        }
-
-        //Multiple object detection in static images
-//        ObjectDetectorOptions options =
-//                new ObjectDetectorOptions.Builder()
-//                        .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
-//                        .enableMultipleObjects()
-//                        .enableClassification()
-//                        .build();
-//
-//        objectDetector = ObjectDetection.getClient(options);
+                    Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                    imgView.setImageBitmap(bitmap);
+                    //runClassification(bitmap);
+                } else {
+                        showToast("File path is null");
+                    }
+        } catch (Exception e) {
+                e.printStackTrace();
+                showToast("Error during object detection: " + e.getMessage());
+            }
 
         //Multiple object detection in static images
 //        LocalModel localModel = new LocalModel.Builder()

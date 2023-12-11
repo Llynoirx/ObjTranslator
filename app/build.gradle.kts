@@ -46,7 +46,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     //object detection
-    implementation("com.google.mlkit:object-detection:16.2.6")
+    implementation("com.google.mlkit:object-detection:17.0.0")
     //text translation
     implementation("com.google.mlkit:translate:17.0.1")
     //sign in
