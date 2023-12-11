@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import com.example.objtranslator.R;
 import com.example.objtranslator.onboarding.LoginActivity;
-import com.example.objtranslator.other.ImageClassificationActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import android.content.Intent;
@@ -23,24 +22,20 @@ public class MainActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_register);
     }
 
-    public void onGotoImageActivity(View view){
-        Intent intent = new Intent(this, ImageClassificationActivity.class);
-        startActivity(intent);
-    }
-
-    public void onGotoObjectDetection(View view){
+    public void onGotoObjDetection(View view){
         Intent intent = new Intent(this, ObjTranslatorActivity.class);
         startActivity(intent);
     }
 
-    public void onGotoCustomObjectDetection(View view){
-        Intent intent = new Intent(this, CustomObjTranslator.class);
-        startActivity(intent);
-    }
+//    public void onGotoCustomObjDetection(View view){
+////        Intent intent = new Intent(this, CustomObjTranslator.class);
+////        startActivity(intent);
+//    }
 
     public void logout(View view) {
         FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
         finish();
     }
 }
