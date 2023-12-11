@@ -55,7 +55,6 @@ dependencies {
     implementation("com.google.mlkit:object-detection-custom:17.0.1")
     implementation("org.tensorflow:tensorflow-lite-support:0.1.0")
     implementation("org.tensorflow:tensorflow-lite-metadata:0.1.0")
-    implementation("com.google.mlkit:object-detection-custom:17.0.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

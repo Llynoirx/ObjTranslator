@@ -46,38 +46,27 @@ public class LoginActivity extends AppCompatActivity {
                 String email = mEmail.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
 
-                //Check if inputs are valid
-                if(TextUtils.isEmpty(email)) {
-                    mEmail.setError("Email is Required.");
-                    return;
-                }
-                if(TextUtils.isEmpty(password)) {
-                    mPassword.setError("Password is Required.");
-                    return;
-                }
-                if(password.length() < 6) {
-                    mPassword.setError("Password Must be >= 6 Characters");
-                    return;
-                }
-
-                //Input is valid, register user in firebase
+                if(!validateInputs(mEmail, mPassword, email, password)) return;
                 progressBar.setVisibility(View.VISIBLE);
+                mLoginBtn.setEnabled(false);
 
                 //Authenticate user
-                fAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if(task.isSuccessful()){
-                                    Toast.makeText(LoginActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                } else {
-                                    Toast.makeText(LoginActivity.this,
-                                            "Error! " + task.getException().getMessage(),
-                                            Toast.LENGTH_SHORT).show();
-                                    progressBar.setVisibility(View.GONE);
-                                }
-                            }
-                        });
+                fAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressBar.setVisibility(View.GONE);
+                        mLoginBtn.setEnabled(true);
+                        if (task.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, "Logged in Successfully", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
+                        } else {
+                            Toast.makeText(LoginActivity.this,
+                                    "Error! " + task.getException().getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
 
@@ -87,12 +76,25 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
             }
         });
+    }
 
-//        guest.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v){
-//                startActivity(new Intent(getApplicationContext(), GuestActivity.class));
-//            }
-//        });
+    private boolean validateInputs(EditText mEmail, EditText mPassword, String email, String password){
+        boolean valid = true;
+
+        if(TextUtils.isEmpty(email)) {
+            mEmail.setError("Email is Required.");
+            valid = false;
+        }
+        if(TextUtils.isEmpty(password)) {
+            mPassword.setError("Password is Required.");
+            valid = false;
+        }
+        if(password.length() < 6) {
+            mPassword.setError("Password Must be >= 6 Characters");
+            valid = false;
+        }
+        return valid;
     }
 }
+
+

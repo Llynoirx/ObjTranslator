@@ -26,8 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
     TextView mGotoLogin, guest;
     FirebaseAuth fAuth;
     ProgressBar progressBar;
-
-    @Override
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
@@ -55,23 +54,28 @@ public class RegisterActivity extends AppCompatActivity {
                 String password = mPassword.getText().toString().trim();
                 String password2 = mPassword2.getText().toString().trim();
 
-                if(!validateInputs(mName, mEmail, mPassword, mPassword2, name, email, password, password2)) return;
+                if (!validateInputs(mName, mEmail, mPassword, mPassword2, name, email, password, password2)) return;
                 progressBar.setVisibility(View.VISIBLE);
 
                 fAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE); // Hide progress bar
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(RegisterActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                                    finish();
-                                } else {
-                                    Toast.makeText(RegisterActivity.this,
-                                            "Error! " + task.getException().getMessage(),
-                                            Toast.LENGTH_SHORT).show();
-                                }
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progressBar.setVisibility(View.GONE); // Hide progress bar
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(RegisterActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                            finish();
+                                        } else {
+                                            Toast.makeText(RegisterActivity.this,
+                                                    "Error! " + task.getException().getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                             }
                         });
             }
@@ -84,6 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private boolean validateInputs(EditText mName, EditText mEmail, EditText mPassword, EditText mPassword2,
                                 String name, String email, String password, String password2) {

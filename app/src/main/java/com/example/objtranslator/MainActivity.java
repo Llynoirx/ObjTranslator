@@ -12,19 +12,18 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean userIsRegistered() {
-        return false;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (userIsRegistered()) {
+        // Check if the user is already authenticated
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
             setContentView(R.layout.activity_homepage);
         } else {
+            // User is not authenticated, redirect to the registration page
             Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 
@@ -49,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public void gotoTranslate(View view) {
         Intent intent = new Intent(this, ObjTranslatorActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void logout(View view) {
