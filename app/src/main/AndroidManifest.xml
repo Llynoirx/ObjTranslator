@@ -38,7 +38,7 @@
             android:name=".ObjTranslatorActivity"
             android:exported="false" />
         <activity
-            android:name=".BoundingBoxActivity"
+            android:name=".ObjInfo"
             android:exported="false" />
 
         <provider
