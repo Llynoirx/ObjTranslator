@@ -1,7 +1,5 @@
 package com.example.objtranslator;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,9 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,31 +16,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.objtranslator.ml.Efficientnet;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.mlkit.common.model.DownloadConditions;
-import com.google.mlkit.common.model.LocalModel;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
-import com.google.mlkit.vision.common.InputImage;
-import com.google.mlkit.vision.objects.DetectedObject;
-import com.google.mlkit.vision.objects.ObjectDetection;
-import com.google.mlkit.vision.objects.ObjectDetector;
-import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
-import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
-
-import org.tensorflow.lite.support.image.TensorImage;
+//import com.google.mlkit.vision.objects.ObjectDetector;
+//import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
 import org.tensorflow.lite.support.label.Category;
-import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
+import org.tensorflow.lite.task.vision.detector.Detection;
+import org.tensorflow.lite.task.vision.detector.ObjectDetector;
+import org.tensorflow.lite.support.image.TensorImage;
 
-import org.tensorflow.lite.DataType;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,10 +38,9 @@ public class ObjTranslatorActivity extends AppCompatActivity {
 
     private ImageView imgView;
     private TextView srcView, targView;
-    private ObjectDetector objectDetector;
+    private ObjectDetector detector;
 
     private List<ObjInfo> objects = new ArrayList<>();
-    private List<String> labels = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,27 +55,6 @@ public class ObjTranslatorActivity extends AppCompatActivity {
         String filePath = getIntent().getStringExtra("filePath");
 
         if (filePath != null) {
-//            ObjectDetectorOptions options =
-//                    new ObjectDetectorOptions.Builder()
-//                            .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
-//                            .enableMultipleObjects()
-//                            .enableClassification()
-//                            .build();
-//            objectDetector = ObjectDetection.getClient(options);
-
-
-//        labels = loadLabelsFromAssets("labels.txt");
-
-        LocalModel localModel = new LocalModel.Builder().setAssetFilePath("efficientnet.tflite").build();
-        CustomObjectDetectorOptions options =
-                new CustomObjectDetectorOptions.Builder(localModel)
-                        .setDetectorMode(CustomObjectDetectorOptions.SINGLE_IMAGE_MODE)
-                        .enableMultipleObjects()
-                        .enableClassification()
-                        .setClassificationConfidenceThreshold(0.5f)
-                        .build();
-        objectDetector = ObjectDetection.getClient(options);
-
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
             if(objects != null){
@@ -107,7 +72,7 @@ public class ObjTranslatorActivity extends AppCompatActivity {
                             int clickedIndex = findClickedObjectIndex(clickX, clickY, objects);
                             if (clickedIndex != -1 && clickedIndex < objects.size()) {
                                 ObjInfo clickedObject = objects.get(clickedIndex);
-                                String clickedLabel = clickedObject.label;
+                                String clickedLabel = clickedObject.getLabel();
                                 srcView.setText(clickedLabel);
                                 runTranslation(srcView.getText().toString());
                             }
@@ -117,7 +82,11 @@ public class ObjTranslatorActivity extends AppCompatActivity {
                     }
                 });
             }
-            runClassification(bitmap);
+            try {
+                runClassification(bitmap);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             imgView.setImageBitmap(bitmap);
 
         } else {
@@ -125,84 +94,47 @@ public class ObjTranslatorActivity extends AppCompatActivity {
         }
     }
 
-    private List<String> loadLabelsFromAssets(String fileName) {
-        List<String> labels = new ArrayList<>();
-        try {
-            InputStream inputStream = getAssets().open(fileName);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                labels.add(line);
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return labels;
-    }
-
     //Classify images; display all objects w/ confidence >= 70%.
     //If no objects could be clearly identified, output 'Could not classify'
     // Classify images; display all objects with confidence >= 70%.
     // If no objects could be clearly identified, output 'Could not classify'
-//    protected void runClassification(Bitmap bitmap) {
-//        InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
-//
-//        objectDetector.process(inputImage)
-//                .addOnSuccessListener(detectedObjects -> {
-//                    objects.clear();
-//                    for (DetectedObject object : detectedObjects) {
-//                        if (!object.getLabels().isEmpty()) {
-//                            String label = object.getLabels().get(0).getText();
-//                            if (label != null && !label.isEmpty()) {
-//                                objects.add(new ObjInfo(object.getBoundingBox(), label));
-//                                Log.d("ObjectDetection", "Object detected: " + label);
-//                            }
-//                        }
-//                    }
-//                    if(!objects.isEmpty()){
-//                        drawDetectionResult(objects, bitmap);
-//                    } else {
-//                        srcView.setText("Unknown Object");
-//                    }
-//                })
-//                .addOnFailureListener(e -> {
-//                    e.printStackTrace();
-//                    srcView.setText("Could not detect any objects");
-//                });
-//    }
+    protected void runClassification(Bitmap bitmap) throws IOException {
+        // Step 1: Create TFLite's TensorImage object
+        TensorImage inputImage = TensorImage.fromBitmap(bitmap);
 
-    protected void runClassification(Bitmap bitmap) {
-        try {
-            Efficientnet model = Efficientnet.newInstance(this);
+        // Step 2: Initialize the detector object
+        ObjectDetector.ObjectDetectorOptions.Builder optionsBuilder = ObjectDetector.ObjectDetectorOptions.builder();
+        optionsBuilder.setMaxResults(5);
+        optionsBuilder.setScoreThreshold(0.3f);
+        ObjectDetector.ObjectDetectorOptions options = optionsBuilder.build();
 
-            // Creates inputs for reference.
-            TensorImage image = TensorImage.fromBitmap(bitmap);
+        ObjectDetector detector = ObjectDetector.createFromFileAndOptions(
+                this,
+                "model.tflite",
+                options
+        );
+        // Step 3: Feed given image to the detector
+        List<Detection> detectedObjects = detector.detect(inputImage);
 
-            // Runs model inference and gets result.
-            Efficientnet.Outputs outputs = model.process(image);
-            List<Category> probability = outputs.getProbabilityAsCategoryList();
+        if(detectedObjects!=null) {
+            // Step 4: Parse the detection result and show it
+            for (Detection object : detectedObjects) {
+                // Get the top-1 category and craft the display text
+                Category category = object.getCategories().get(0);
+                String label = category.getLabel();
 
-            // Releases model resources if no longer used.
-            model.close();
-
-            // Find the label with the highest probability
-            float maxProbability = -1;
-            String predictedLabel = "Unknown Object";
-
-            for (Category category : probability) {
-                if (category.getScore() > maxProbability) {
-                    maxProbability = category.getScore();
-                    predictedLabel = category.getLabel();
+                // Create a data object to display the detection result
+                if (label != null && !label.isEmpty()) {
+                    RectF rectF = object.getBoundingBox();
+                    Rect rect = new Rect();
+                    rectF.roundOut(rect);
+                    objects.add(new ObjInfo(rect, label));
                 }
             }
-            srcView.setText(predictedLabel);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            srcView.setText("Error running classification model");
         }
+            drawDetectionResult(objects, bitmap);
     }
+
 
     private void runTranslation(String object){
         //Create Translator from English to Chinese
@@ -243,18 +175,18 @@ public class ObjTranslatorActivity extends AppCompatActivity {
         runOnUiThread(() -> Toast.makeText(ObjTranslatorActivity.this, message, Toast.LENGTH_SHORT).show());
     }
 
-    protected void drawDetectionResult(List<ObjInfo> detectedObjects, Bitmap bitmap){
+    protected void drawDetectionResult(List<ObjInfo> detectedObjects, Bitmap bitmap) {
         Bitmap outputBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(outputBitmap);
         Paint penObj = new Paint();
         penObj.setColor(Color.RED);
+        penObj.setStrokeWidth(8F);
         penObj.setStyle(Paint.Style.FILL);
         penObj.setStrokeWidth(8f);
 
-        // Draw dot at the center of each detected object
         for (ObjInfo object : detectedObjects) {
-            float centerX = object.boundingBox.exactCenterX();
-            float centerY = object.boundingBox.exactCenterY();
+            float centerX = object.getBoundingBox().exactCenterX();
+            float centerY = object.getBoundingBox().exactCenterY();
             canvas.drawCircle(centerX, centerY, 20f, penObj);
         }
         imgView.setImageBitmap(outputBitmap);
@@ -263,7 +195,7 @@ public class ObjTranslatorActivity extends AppCompatActivity {
     private int findClickedObjectIndex(float clickX, float clickY, List<ObjInfo> detectedObjects) {
         for (int i = 0; i < detectedObjects.size(); i++) {
             ObjInfo object = detectedObjects.get(i);
-            Rect boundingBox = object.boundingBox;
+            Rect boundingBox = object.getBoundingBox();
             // Check if the click coordinates are within the bounding box
             if (clickX >= boundingBox.left && clickX <= boundingBox.right
                     && clickY >= boundingBox.top && clickY <= boundingBox.bottom) {
@@ -272,5 +204,4 @@ public class ObjTranslatorActivity extends AppCompatActivity {
         }
         return -1;
     }
-
 }
