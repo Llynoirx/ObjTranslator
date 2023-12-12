@@ -44,14 +44,15 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-
     //object detection
     implementation("com.google.mlkit:object-detection:17.0.0")
     //text translation
     implementation("com.google.mlkit:translate:17.0.1")
-    //sign in
+    //onboarding authentication
     implementation("com.google.firebase:firebase-auth:22.3.0")
     //custom obj detection
+//    implementation("com.google.firebase:firebase-ml-vision:24.0.1")
+//    implementation("com.google.firebase:firebase-ml-model-interpreter:22.0.1")
     implementation("com.google.mlkit:object-detection-custom:17.0.1")
     implementation("org.tensorflow:tensorflow-lite-support:0.1.0")
     implementation("org.tensorflow:tensorflow-lite-metadata:0.1.0")

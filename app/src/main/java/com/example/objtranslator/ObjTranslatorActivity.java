@@ -19,9 +19,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.objtranslator.ml.Efficientnet;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.mlkit.common.model.DownloadConditions;
+import com.google.mlkit.common.model.LocalModel;
 import com.google.mlkit.nl.translate.Translation;
 import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
@@ -29,8 +31,19 @@ import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.objects.DetectedObject;
 import com.google.mlkit.vision.objects.ObjectDetection;
 import com.google.mlkit.vision.objects.ObjectDetector;
+import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions;
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions;
 
+import org.tensorflow.lite.support.image.TensorImage;
+import org.tensorflow.lite.support.label.Category;
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
+
+import org.tensorflow.lite.DataType;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +54,7 @@ public class ObjTranslatorActivity extends AppCompatActivity {
     private ObjectDetector objectDetector;
 
     private List<ObjInfo> objects = new ArrayList<>();
+    private List<String> labels = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +69,27 @@ public class ObjTranslatorActivity extends AppCompatActivity {
         String filePath = getIntent().getStringExtra("filePath");
 
         if (filePath != null) {
-            //Multiple object detection in static images
-            ObjectDetectorOptions options =
-                    new ObjectDetectorOptions.Builder()
-                            .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
-                            .enableMultipleObjects()
-                            .enableClassification()
-                            .build();
-            objectDetector = ObjectDetection.getClient(options);
+//            ObjectDetectorOptions options =
+//                    new ObjectDetectorOptions.Builder()
+//                            .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
+//                            .enableMultipleObjects()
+//                            .enableClassification()
+//                            .build();
+//            objectDetector = ObjectDetection.getClient(options);
+
+
+//        labels = loadLabelsFromAssets("labels.txt");
+
+        LocalModel localModel = new LocalModel.Builder().setAssetFilePath("efficientnet.tflite").build();
+        CustomObjectDetectorOptions options =
+                new CustomObjectDetectorOptions.Builder(localModel)
+                        .setDetectorMode(CustomObjectDetectorOptions.SINGLE_IMAGE_MODE)
+                        .enableMultipleObjects()
+                        .enableClassification()
+                        .setClassificationConfidenceThreshold(0.5f)
+                        .build();
+        objectDetector = ObjectDetection.getClient(options);
+
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
 
             if(objects != null){
@@ -96,56 +123,86 @@ public class ObjTranslatorActivity extends AppCompatActivity {
         } else {
             showToast("File path is null");
         }
+    }
 
-        // Now, set the OnClickListener after drawDetectionResult
-
-        //Multiple object detection in static images
-//        LocalModel localModel = new LocalModel.Builder()
-//                .setAbsoluteFilePath("/Users/kathyho/StudioProjects/ObjTranslator/app/src/main/ml/model.tflite")
-//                .build();
-//
-//        CustomObjectDetectorOptions options =
-//                new CustomObjectDetectorOptions.Builder(localModel)
-//                        .setDetectorMode(CustomObjectDetectorOptions.SINGLE_IMAGE_MODE)
-//                        .enableMultipleObjects()
-//                        .enableClassification()
-//                        .setClassificationConfidenceThreshold(0.5f)
-//                        .build();
-//
-//        objectDetector = ObjectDetection.getClient(options);
+    private List<String> loadLabelsFromAssets(String fileName) {
+        List<String> labels = new ArrayList<>();
+        try {
+            InputStream inputStream = getAssets().open(fileName);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                labels.add(line);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return labels;
     }
 
     //Classify images; display all objects w/ confidence >= 70%.
     //If no objects could be clearly identified, output 'Could not classify'
     // Classify images; display all objects with confidence >= 70%.
     // If no objects could be clearly identified, output 'Could not classify'
-    protected void runClassification(Bitmap bitmap) {
-        InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
-        objectDetector.process(inputImage)
-                .addOnSuccessListener(detectedObjects -> {
-                    objects.clear();
-                    for (DetectedObject object : detectedObjects) {
-                        if (!object.getLabels().isEmpty()) {
-                            String label = object.getLabels().get(0).getText();
-                            if (label != null && !label.isEmpty()) {
-                                objects.add(new ObjInfo(object.getBoundingBox(), label));
-                                Log.d("ObjectDetection", "Object detected: " + label);
-                            }
-                        }
-                    }
-                    if(!objects.isEmpty()){
-                        Log.d("OBJECT LIST", "Detected objects: " + objects.toString());
-                        drawDetectionResult(objects, bitmap);
-                    } else {
-                        srcView.setText("Unknown Object");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    e.printStackTrace();
-                    srcView.setText("Could not detect any objects");
-                });
-    }
+//    protected void runClassification(Bitmap bitmap) {
+//        InputImage inputImage = InputImage.fromBitmap(bitmap, 0);
+//
+//        objectDetector.process(inputImage)
+//                .addOnSuccessListener(detectedObjects -> {
+//                    objects.clear();
+//                    for (DetectedObject object : detectedObjects) {
+//                        if (!object.getLabels().isEmpty()) {
+//                            String label = object.getLabels().get(0).getText();
+//                            if (label != null && !label.isEmpty()) {
+//                                objects.add(new ObjInfo(object.getBoundingBox(), label));
+//                                Log.d("ObjectDetection", "Object detected: " + label);
+//                            }
+//                        }
+//                    }
+//                    if(!objects.isEmpty()){
+//                        drawDetectionResult(objects, bitmap);
+//                    } else {
+//                        srcView.setText("Unknown Object");
+//                    }
+//                })
+//                .addOnFailureListener(e -> {
+//                    e.printStackTrace();
+//                    srcView.setText("Could not detect any objects");
+//                });
+//    }
 
+    protected void runClassification(Bitmap bitmap) {
+        try {
+            Efficientnet model = Efficientnet.newInstance(this);
+
+            // Creates inputs for reference.
+            TensorImage image = TensorImage.fromBitmap(bitmap);
+
+            // Runs model inference and gets result.
+            Efficientnet.Outputs outputs = model.process(image);
+            List<Category> probability = outputs.getProbabilityAsCategoryList();
+
+            // Releases model resources if no longer used.
+            model.close();
+
+            // Find the label with the highest probability
+            float maxProbability = -1;
+            String predictedLabel = "Unknown Object";
+
+            for (Category category : probability) {
+                if (category.getScore() > maxProbability) {
+                    maxProbability = category.getScore();
+                    predictedLabel = category.getLabel();
+                }
+            }
+            srcView.setText(predictedLabel);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            srcView.setText("Error running classification model");
+        }
+    }
 
     private void runTranslation(String object){
         //Create Translator from English to Chinese
