@@ -3,11 +3,11 @@ package com.example.objtranslator;
 import android.graphics.Rect;
 
 public class ObjInfo {
-    public Rect rect;
+    public Rect boundingBox;
     public String label;
 
-    public ObjInfo(Rect rect, String label) {
-        this.rect = rect;
+    public ObjInfo(Rect boundingBox, String label) {
+        this.boundingBox = boundingBox;
         this.label = label;
     }
 }
