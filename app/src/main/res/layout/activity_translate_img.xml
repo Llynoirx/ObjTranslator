@@ -7,19 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".ObjTranslatorActivity">
 
-
-
     <ImageView
         android:id="@+id/image"
         android:layout_width="411dp"
         android:layout_height="476dp"
+        android:adjustViewBounds="false"
         android:cropToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:adjustViewBounds="false"
-        android:scaleType="centerInside"
-        android:visibility="visible"
         android:clickable="true" />
 <!--        app:srcCompat="@android:drawable/ic_menu_camera" -->
 
